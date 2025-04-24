@@ -1,0 +1,62 @@
+@include('layouts/master')
+<body class="bg-white text-gray-800">
+    @include('layouts/nav')
+  <!-- Hero / Banner -->
+  <section class="bg-gradient-to-r from-purple-600 to-pink-500 text-white py-16 px-4 text-center">
+    <h2 class="text-3xl md:text-4xl font-semibold mb-2">Welcome to Event Organizer</h2>
+    <p class="text-sm md:text-base mb-6">Here are your scheduled and upcoming events</p>
+  </section>
+
+  <!-- Event List -->
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <div class="flex justify-between items-center mb-8">
+      <h3 class="text-2xl font-semibold">Upcoming Events</h3>
+      <a href="/events/create" class="bg-purple-600 text-white px-5 py-2 rounded-lg text-sm hover:bg-purple-700">+ Create Event</a>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Event Card -->
+      <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
+        <img src="https://source.unsplash.com/600x400/?wedding,event" alt="Event Image" class="w-full h-48 object-cover">
+        <div class="p-5">
+          <h4 class="text-xl font-semibold text-purple-700">Elegant Wedding</h4>
+          <p class="text-sm text-gray-600 mt-2">A romantic wedding held at the seaside resort, complete with live music and fine dining.</p>
+          <div class="text-sm text-gray-500 mt-4">
+            <p><strong>Date:</strong> 20 June 2025</p>
+            <p><strong>Location:</strong> Bali Beach Resort</p>
+          </div>
+          <a href="#" class="mt-4 inline-block text-purple-600 hover:underline text-sm">View Details</a>
+        </div>
+      </div>
+
+      <!-- Event Card -->
+      <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
+        <img src="https://source.unsplash.com/600x400/?seminar,conference" alt="Event Image" class="w-full h-48 object-cover">
+        <div class="p-5">
+          <h4 class="text-xl font-semibold text-purple-700">Tech Seminar 2025</h4>
+          <p class="text-sm text-gray-600 mt-2">An exclusive seminar about AI and future tech trends, inviting top-tier speakers.</p>
+          <div class="text-sm text-gray-500 mt-4">
+            <p><strong>Date:</strong> 12 July 2025</p>
+            <p><strong>Location:</strong> Jakarta Convention Center</p>
+          </div>
+          <a href="#" class="mt-4 inline-block text-purple-600 hover:underline text-sm">View Details</a>
+        </div>
+      </div>
+
+      <!-- Event Card -->
+      <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
+        <img src="https://source.unsplash.com/600x400/?birthday,event" alt="Event Image" class="w-full h-48 object-cover">
+        <div class="p-5">
+          <h4 class="text-xl font-semibold text-purple-700">Luxury Birthday Party</h4>
+          <p class="text-sm text-gray-600 mt-2">A luxury birthday celebration with custom decorations, DJ performance, and catering.</p>
+          <div class="text-sm text-gray-500 mt-4">
+            <p><strong>Date:</strong> 5 August 2025</p>
+            <p><strong>Location:</strong> Bandung Rooftop Hall</p>
+          </div>
+          <a href="#" class="mt-4 inline-block text-purple-600 hover:underline text-sm">View Details</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  @include('layouts/footer')
+</body>
