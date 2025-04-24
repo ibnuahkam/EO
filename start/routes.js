@@ -4,7 +4,9 @@
 const Route = use('Route')
 
 // Route.on('/').render('welcome')
-Route.get('/', 'AuthController.showLogin').middleware(['auth']);
+Route.get('/', ({ response }) => {
+    return response.redirect('/login')
+  })
 Route.get('/login', 'AuthController.showLogin').middleware(['guest'])
 Route.post('/login', 'AuthController.login').middleware(['guest'])
 Route.get('/dashboard', 'DashboardController.index').middleware(['auth'])
