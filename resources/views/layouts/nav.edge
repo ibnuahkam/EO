@@ -24,14 +24,17 @@
       <!-- Mobile-only user info -->
       <div class="md:hidden border-t pt-3">
         <span class="block mb-2">Hi, {{ auth.user.name }}</span>
-        <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+        <!-- Tombol logout untuk mobile -->
+        <button onclick="confirmLogout()" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
       </div>
     </div>
 
     <!-- User Info (desktop only) -->
     <div class="hidden md:flex items-center space-x-4 text-sm">
       <span>Hi, {{ auth.user.name }}</span>
-      <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+      <form id="logout-form" action="/logout" method="POST">
+        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+      </form>
     </div>
   </div>
 </nav>
@@ -42,7 +45,13 @@
     color: #D342AF; /* purple-700 */
     font-weight: 600;
   }
+
+  /* Pastikan tombol logout pada mobile tetap terlihat */
+  .md\\:hidden button {
+    display: inline-block !important; /* Pastikan tombol logout di mobile muncul */
+  }
 </style>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   // Vanilla JS untuk menu aktif
@@ -68,4 +77,25 @@
       $('#menu').toggleClass('hidden');
     });
   });
+
+  // SweetAlert untuk konfirmasi logout
+  function confirmLogout() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You will be logged out.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Menyubmit form logout setelah konfirmasi
+        document.getElementById('logout-form').submit();
+      }
+    });
+  }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
