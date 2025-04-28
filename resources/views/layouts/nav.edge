@@ -23,14 +23,14 @@
 
       <!-- Mobile-only user info -->
       <div class="md:hidden border-t pt-3">
-        <span class="block mb-2">Hi, {{ user.name }}</span>
+        <span class="block mb-2">Hi, {{ auth.user.name }}</span>
         <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
       </div>
     </div>
 
     <!-- User Info (desktop only) -->
     <div class="hidden md:flex items-center space-x-4 text-sm">
-      <span>Hi, {{ user.name }}</span>
+      <span>Hi, {{ auth.user.name }}</span>
       <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
     </div>
   </div>

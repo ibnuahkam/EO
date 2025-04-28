@@ -1,6 +1,6 @@
 @include('layouts/master')
 <body class="bg-white text-gray-800">
-    @include('layouts/nav')
+  @include('layouts/nav')
   <!-- Hero / Banner -->
   <section class="bg-gradient-to-r from-purple-600 to-pink-500 text-white py-16 px-4 text-center">
     <h2 class="text-3xl md:text-4xl font-semibold mb-2">Welcome to Event Organizer</h2>
@@ -11,52 +11,202 @@
   <main class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex justify-between items-center mb-8">
       <h3 class="text-2xl font-semibold">Upcoming Events</h3>
-      <a href="/events/create" class="bg-purple-600 text-white px-5 py-2 rounded-lg text-sm hover:bg-purple-700">+ Create Event</a>
+      <button id="createEventBtn" type="button" style="background-color:#AD39D2;border:1px solid #AD39D2" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+        + Create Event
+      </button>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Event Card -->
-      <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
-        <img src="https://source.unsplash.com/600x400/?wedding,event" alt="Event Image" class="w-full h-48 object-cover">
-        <div class="p-5">
-          <h4 class="text-xl font-semibold text-purple-700">Elegant Wedding</h4>
-          <p class="text-sm text-gray-600 mt-2">A romantic wedding held at the seaside resort, complete with live music and fine dining.</p>
-          <div class="text-sm text-gray-500 mt-4">
-            <p><strong>Date:</strong> 20 June 2025</p>
-            <p><strong>Location:</strong> Bali Beach Resort</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="events-container">
+      @each(event in events)
+        <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition flex flex-col">
+          <!-- Cek apakah event memiliki dokumen dan gambar -->
+          @if(event.document_images && event.document_images.length > 0)
+            <img src="/uploads/images/{{ event.document_images[0] }}" alt="Event Image" class="event-image">
+          @else
+            <img src="https://source.unsplash.com/600x400/?wedding,event" alt="Event Image">
+          @endif
+    
+          <div class="p-5 flex-1">
+            <h4 class="text-xl font-semibold text-purple-700">{{ event.title }}</h4>
+            <p class="text-sm text-gray-600 mt-2">{{ event.description }}</p>
+            <div class="text-sm text-gray-500 mt-4">
+              <p><strong>Date:</strong> {{ event.date }}</p>
+              <p><strong>Location:</strong> {{ event.location }}</p>
+            </div>
+            <a href="/events/{{ event.id }}" class="mt-4 inline-block text-purple-600 hover:underline text-sm">View Details</a>
           </div>
-          <a href="#" class="mt-4 inline-block text-purple-600 hover:underline text-sm">View Details</a>
         </div>
-      </div>
-
-      <!-- Event Card -->
-      <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
-        <img src="https://source.unsplash.com/600x400/?seminar,conference" alt="Event Image" class="w-full h-48 object-cover">
-        <div class="p-5">
-          <h4 class="text-xl font-semibold text-purple-700">Tech Seminar 2025</h4>
-          <p class="text-sm text-gray-600 mt-2">An exclusive seminar about AI and future tech trends, inviting top-tier speakers.</p>
-          <div class="text-sm text-gray-500 mt-4">
-            <p><strong>Date:</strong> 12 July 2025</p>
-            <p><strong>Location:</strong> Jakarta Convention Center</p>
-          </div>
-          <a href="#" class="mt-4 inline-block text-purple-600 hover:underline text-sm">View Details</a>
+      @else
+        <div class="col-span-full text-center text-lg text-gray-600">
+          Tidak Ada event yang di buat
         </div>
-      </div>
-
-      <!-- Event Card -->
-      <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
-        <img src="https://source.unsplash.com/600x400/?birthday,event" alt="Event Image" class="w-full h-48 object-cover">
-        <div class="p-5">
-          <h4 class="text-xl font-semibold text-purple-700">Luxury Birthday Party</h4>
-          <p class="text-sm text-gray-600 mt-2">A luxury birthday celebration with custom decorations, DJ performance, and catering.</p>
-          <div class="text-sm text-gray-500 mt-4">
-            <p><strong>Date:</strong> 5 August 2025</p>
-            <p><strong>Location:</strong> Bandung Rooftop Hall</p>
-          </div>
-          <a href="#" class="mt-4 inline-block text-purple-600 hover:underline text-sm">View Details</a>
-        </div>
-      </div>
+      @endeach
     </div>
   </main>
+
+  <!-- Modal -->
+<div class="modal" id="myModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventModalLabel">Create New Event</h5>
+        <!-- Tombol Close dengan data-bs-dismiss untuk menutup modal -->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="eventForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="mb-3">
+            <input type="hidden" name="user_id" value="{{ auth.user.id }}">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            <label for="eventTitle" class="form-label">Event Title</label>
+            <input type="text" name="title" id="eventTitle" placeholder="Event Title" required class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="eventDescription" class="form-label">Description</label>
+            <textarea name="description" id="eventDescription" placeholder="Description" required class="form-control"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="eventLocation" class="form-label">Location</label>
+            <input type="text" name="location" id="eventLocation" placeholder="Location" required class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="eventDate" class="form-label">Date</label>
+            <input type="date" name="date" id="eventDate" required class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="eventStatus" class="form-label">Status</label>
+            <select name="status" id="eventStatus" class="form-select">
+              <option value="0">Upcoming</option>
+              <option value="1">Ongoing</option>
+              <option value="2">Completed</option>
+            </select>
+          </div>
+
+          <!-- Document Management -->
+          <div class="mb-3">
+            <label for="documentDescription" class="form-label">Document Description</label>
+            <textarea name="document_description" id="documentDescription" placeholder="Document Description" class="form-control"></textarea>
+          </div>
+          <div class="border border-dashed border-purple-500 rounded p-4 text-center cursor-pointer">
+            <p class="text-sm text-gray-500">Drag & drop images here or click to select</p>
+            <input type="file" id="imagesInput" name="images" multiple accept="image/*" />
+          </div>
+          <div id="imagePreview" class="grid grid-cols-3 gap-2 mt-2"></div>
+        </div>
+
+        <div class="modal-footer">
+          <!-- Tombol Cancel dengan data-bs-dismiss -->
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<style>
+  .event-image {
+  width: 100%;  /* Membuat gambar responsif */
+  height: auto; /* Menjaga rasio aspek gambar */
+  object-fit: cover; /* Gambar mengisi kontainer tanpa distorsi */
+  max-height: 200px; /* Membatasi tinggi gambar agar tidak melebihi batas */
+}
+</style>
+
   @include('layouts/footer')
+
+  <script>
+    document.getElementById('eventForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+  
+      const form = e.target;
+      const formData = new FormData(form);
+  
+      try {
+        const res = await fetch('/store-event', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value,
+            'Accept': 'application/json',
+            // Jangan set Content-Type di sini
+          },
+          body: formData,  // Kirim data dalam bentuk body (bukan URL)
+        });
+  
+        const result = await res.json();
+        if (res.ok) {
+          Swal.fire({
+            title: 'Sukses!',
+            text: 'Event berhasil dibuat!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+          closeModal(); // Menutup modal setelah berhasil submit
+          location.reload(); // Reload halaman setelah berhasil
+        } else {
+          Swal.fire({
+            title: 'Gagal!',
+            text: 'Gagal membuat event: ' + (result.message || result.error),
+            icon: 'error',
+            confirmButtonText: 'Coba Lagi'
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Terjadi kesalahan jaringan: ' + error.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  
+    const imageInput = document.getElementById('imagesInput');
+    const previewContainer = document.getElementById('imagePreview');
+    const maxFileSize = 2 * 1024 * 1024; // 2MB
+  
+    if (imageInput) {
+      imageInput.addEventListener('change', function () {
+        previewContainer.innerHTML = ''; // Clear previous preview
+        Array.from(this.files).forEach(file => {
+          if (!file.type.match('image.*')) {
+            Swal.fire({
+              title: 'Peringatan!',
+              text: 'Hanya file gambar yang diperbolehkan',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+            });
+            return;
+          }
+  
+          if (file.size > maxFileSize) {
+            Swal.fire({
+              title: 'Peringatan!',
+              text: 'Ukuran file terlalu besar (maksimal 2MB)',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+            });
+            return;
+          }
+  
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'w-full h-24 object-cover rounded';
+            previewContainer.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+  
+    // Fungsi untuk menutup modal
+    function closeModal() {
+      const modal = document.getElementById('myModal');
+      if (modal) {
+        const modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide(); // Menutup modal menggunakan Bootstrap Modal
+      }
+    }
+  </script>
 </body>

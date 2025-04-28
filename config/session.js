@@ -15,7 +15,7 @@ module.exports = {
   | For `redis` driver, make sure to install and register `@adonisjs/redis`
   |
   */
-  driver: Env.get('SESSION_DRIVER', 'cookie'),
+  driver: Env.get('SESSION_DRIVER', 'file'),
 
   /*
   |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ module.exports = {
   | are signed and encrypted.
   |
   */
-  cookieName: 'adonis-session',
+  cookieName: Env.get('SESSION_NAME', 'adonis-session'),
 
   /*
   |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ module.exports = {
   |  '2h', '10d', '5y', '2.5 hrs'
   |
   */
-  age: '2h',
+  age: '1d',
 
   /*
   |--------------------------------------------------------------------------
@@ -65,7 +65,7 @@ module.exports = {
   */
   cookie: {
     httpOnly: true,
-    sameSite: false,
+    sameSite: true,
     path: '/'
   },
 
@@ -79,7 +79,7 @@ module.exports = {
   |
   */
   file: {
-    location: 'sessions'
+    location: 'tmp/sessions'
   },
 
   /*
