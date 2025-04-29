@@ -1,0 +1,57 @@
+@include('layouts/master')
+
+<body class="bg-white text-gray-800">
+    @include('layouts/nav')
+
+    <!-- Hero / Banner -->
+    <section class="bg-gradient-to-r from-purple-600 to-pink-500 text-white py-16 px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-semibold mb-2">Tentang Kami</h2>
+        <p class="text-sm md:text-base mb-6">Mengenal lebih dekat tentang Event Organizer kami dan visi kami dalam menyelenggarakan acara yang luar biasa.</p>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="max-w-7xl mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <!-- Image -->
+            <div class="flex justify-center">
+                <img src="https://jakplan.com/jakplan-images/about/3.png" alt="About Us" class="w-full h-auto rounded-xl shadow-lg">
+            </div>
+            <!-- Text -->
+            <div>
+                <h3 class="text-2xl font-semibold text-purple-700 mb-4">Kami adalah Event Organizer Terpercaya</h3>
+                <p class="text-sm text-gray-600 mb-4">Kami menyediakan layanan event organizer untuk berbagai jenis acara, mulai dari pernikahan hingga konferensi. Dengan pengalaman bertahun-tahun dan tim profesional, kami berkomitmen untuk memberikan pengalaman acara yang tak terlupakan.</p>
+                <p class="text-sm text-gray-600 mb-4">Kami percaya bahwa setiap acara memiliki cerita unik, dan tugas kami adalah menghidupkan cerita itu dengan perencanaan yang cermat dan eksekusi yang sempurna. Baik acara besar maupun kecil, kami siap membantu merancang dan menyelenggarakan acara sesuai keinginan Anda.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Services Section -->
+    <section class="bg-gray-100 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h3 class="text-2xl font-semibold text-purple-700 mb-6">Layanan Kami</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white shadow-lg rounded-xl p-6 text-center hover:shadow-xl transition">
+                    <h4 class="text-xl font-semibold text-purple-700 mb-3">Corporate Events</h4>
+                    <p class="text-sm text-gray-600">Kami membantu merencanakan dan menyelenggarakan Corporate Events .</p>
+                </div>
+                <div class="bg-white shadow-lg rounded-xl p-6 text-center hover:shadow-xl transition">
+                    <h4 class="text-xl font-semibold text-purple-700 mb-3">Hiburan & Komunitas</h4>
+                    <p class="text-sm text-gray-600">Kami mengelola Hiburan & Komunitas dengan pengalaman yang memadai dalam pengaturan acara profesional.</p>
+                </div>
+                <div class="bg-white shadow-lg rounded-xl p-6 text-center hover:shadow-xl transition">
+                    <h4 class="text-xl font-semibold text-purple-700 mb-3">Pesta Ulang Tahun</h4>
+                    <p class="text-sm text-gray-600">Kami menyelenggarakan acara ulang tahun yang tak terlupakan dengan tema yang unik dan hiburan terbaik.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section class="max-w-7xl mx-auto px-4 py-12 text-center">
+        <h3 class="text-2xl font-semibold text-purple-700 mb-6">Hubungi Kami</h3>
+        <p class="text-sm text-gray-600 mb-4">Jika Anda ingin mengetahui lebih lanjut tentang layanan kami atau merencanakan acara, jangan ragu untuk menghubungi kami.</p>
+        <a href="mailto:contact@eventorganizer.com" class="bg-purple-600 text-white px-5 py-2 rounded-lg text-sm hover:bg-purple-700">Email Kami</a>
+    </section>
+
+    @include('layouts/footer')
+</body>

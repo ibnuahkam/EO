@@ -7,24 +7,36 @@
     <p class="text-sm md:text-base mb-6">Here are your scheduled and upcoming events</p>
   </section>
 
-  <!-- Event List -->
   <main class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex justify-between items-center mb-8">
       <h3 class="text-2xl font-semibold">Schedule Events</h3>
-      <button id="createEventBtn" type="button" style="background-color:#AD39D2;border:1px solid #AD39D2" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-        + Create Event
-      </button>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="events-container">
       @each(event in events)
         <div class="bg-white shadow-xl rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-          <!-- Cek apakah event memiliki dokumen dan gambar -->
-          @if(event.document_images && event.document_images.length > 0)
-            <img src="/uploads/images/{{ event.document_images[0] }}" alt="Event Image" class="w-full h-64 object-cover rounded-t-2xl">
-          @else
-            <img src="https://source.unsplash.com/600x400/?wedding,event" alt="Event Image" class="w-full h-64 object-cover rounded-t-2xl">
-          @endif
+          
+          <!-- Container untuk gambar dan status -->
+          <div class="relative">
+            <!-- Cek apakah event memiliki dokumen dan gambar -->
+            @if(event.document_images && event.document_images.length > 0)
+              <img src="/uploads/images/{{ event.document_images[0] }}" alt="Event Image" class="w-full h-64 object-cover rounded-t-2xl">
+            @else
+              <img src="https://source.unsplash.com/600x400/?wedding,event" alt="Event Image" class="w-full h-64 object-cover rounded-t-2xl">
+            @endif
+    
+            <!-- Status di kanan atas -->
+            <div class="absolute top-0 right-0 m-4 text-xs font-semibold py-1 px-3 rounded-full shadow-md 
+              {{ event.status === 0 ? 'bg-blue-600 text-white' : event.status === 1 ? 'bg-green-600 text-white' : 'bg-gray-500 text-white' }}">
+              @if(event.status === 0)
+                Upcoming
+              @elseif(event.status === 1)
+                Ongoing
+              @else
+                Unknown
+              @endif
+            </div>
+          </div>
     
           <div class="p-6 space-y-4">
             <!-- Title -->
@@ -35,21 +47,7 @@
     
             <!-- Date and Location -->
             <div class="flex justify-between text-sm text-gray-500 mt-4">
-              <p><strong>Date:</strong> {{ event.date }}</p>
               <p><strong>Location:</strong> {{ event.location }}</p>
-            </div>
-    
-            <!-- Status -->
-            <div class="mt-4">
-              <p><strong>Status:</strong> 
-                @if(event.status === 0)
-                  <span class="text-blue-600 font-semibold">Upcoming</span>
-                @elseif(event.status === 1)
-                  <span class="text-green-600 font-semibold">Ongoing</span>
-                @else
-                  <span class="text-gray-500 font-semibold">Unknown</span>
-                @endif
-              </p>
             </div>
     
             <!-- Organizer -->
@@ -61,6 +59,9 @@
             <div class="mt-4">
               <a href="/events/{{ event.id }}" class="inline-block bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-300">View Details</a>
             </div>
+            <p class="text-right text-gray-400 formatted-date">
+              <strong>Date:</strong> {{ event.date }}
+            </p>
           </div>
         </div>
       @else
@@ -70,65 +71,6 @@
       @endeach
     </div>
   </main>
-
-  <!-- Modal -->
-  <div class="modal" id="myModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="eventModalLabel">Create New Event</h5>
-          <!-- Tombol Close dengan data-bs-dismiss untuk menutup modal -->
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="eventForm" enctype="multipart/form-data">
-          <div class="modal-body">
-            <div class="mb-3">
-              <input type="hidden" name="user_id" value="{{ auth.user.id }}">
-              <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-              <label for="eventTitle" class="form-label">Event Title</label>
-              <input type="text" name="title" id="eventTitle" placeholder="Event Title" required class="form-control">
-            </div>
-            <div class="mb-3">
-              <label for="eventDescription" class="form-label">Description</label>
-              <textarea name="description" id="eventDescription" placeholder="Description" required class="form-control"></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="eventLocation" class="form-label">Location</label>
-              <input type="text" name="location" id="eventLocation" placeholder="Location" required class="form-control">
-            </div>
-            <div class="mb-3">
-              <label for="eventDate" class="form-label">Date</label>
-              <input type="date" name="date" id="eventDate" required class="form-control">
-            </div>
-            <div class="mb-3">
-              <label for="eventStatus" class="form-label">Status</label>
-              <select name="status" id="eventStatus" class="form-select">
-                <option value="0">Upcoming</option>
-                <option value="1">Ongoing</option>
-              </select>
-            </div>
-
-            <!-- Document Management -->
-            <div class="mb-3">
-              <label for="documentDescription" class="form-label">Document Description</label>
-              <textarea name="document_description" id="documentDescription" placeholder="Document Description" class="form-control"></textarea>
-            </div>
-            <div class="border border-dashed border-purple-500 rounded p-4 text-center cursor-pointer">
-              <p class="text-sm text-gray-500">Drag & drop images here or click to select</p>
-              <input type="file" id="imagesInput" name="images" multiple accept="image/*" />
-            </div>
-            <div id="imagePreview" class="grid grid-cols-3 gap-2 mt-2"></div>
-          </div>
-
-          <div class="modal-footer">
-            <!-- Tombol Cancel dengan data-bs-dismiss -->
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 
   <style>
     .event-image {
@@ -148,98 +90,21 @@
   @include('layouts/footer')
 
   <script>
-    document.getElementById('eventForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-  
-      const form = e.target;
-      const formData = new FormData(form);
-  
-      try {
-        const res = await fetch('/store-event', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value,
-            'Accept': 'application/json',
-            // Jangan set Content-Type di sini
-          },
-          body: formData,  // Kirim data dalam bentuk body (bukan URL)
-        });
-  
-        const result = await res.json();
-        if (res.ok) {
-          Swal.fire({
-            title: 'Sukses!',
-            text: 'Event berhasil dibuat!',
-            icon: 'success',
-            confirmButtonText: 'OK'
-          });
-          closeModal(); // Menutup modal setelah berhasil submit
-          location.reload(); // Reload halaman setelah berhasil
-        } else {
-          Swal.fire({
-            title: 'Gagal!',
-            text: 'Gagal membuat event: ' + (result.message || result.error),
-            icon: 'error',
-            confirmButtonText: 'Coba Lagi'
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          title: 'Error!',
-          text: 'Terjadi kesalahan jaringan: ' + error.message,
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      }
+    document.addEventListener('DOMContentLoaded', function() {
+  const dateElements = document.querySelectorAll('.formatted-date'); // Ubah ID jadi kelas
+
+  dateElements.forEach(dateElement => {
+      const date = new Date(dateElement.innerText);
+
+      const formattedDate = new Intl.DateTimeFormat('id-ID', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }).format(date);
+
+      dateElement.innerText = formattedDate;
     });
-  
-    const imageInput = document.getElementById('imagesInput');
-    const previewContainer = document.getElementById('imagePreview');
-    const maxFileSize = 2 * 1024 * 1024; // 2MB
-  
-    if (imageInput) {
-      imageInput.addEventListener('change', function () {
-        previewContainer.innerHTML = ''; // Clear previous preview
-        Array.from(this.files).forEach(file => {
-          if (!file.type.match('image.*')) {
-            Swal.fire({
-              title: 'Peringatan!',
-              text: 'Hanya file gambar yang diperbolehkan',
-              icon: 'warning',
-              confirmButtonText: 'OK'
-            });
-            return;
-          }
-  
-          if (file.size > maxFileSize) {
-            Swal.fire({
-              title: 'Peringatan!',
-              text: 'Ukuran file terlalu besar (maksimal 2MB)',
-              icon: 'warning',
-              confirmButtonText: 'OK'
-            });
-            return;
-          }
-  
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'w-full h-24 object-cover rounded';
-            previewContainer.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-    }
-  
-    // Fungsi untuk menutup modal
-    function closeModal() {
-      const modal = document.getElementById('myModal');
-      if (modal) {
-        const modalInstance = bootstrap.Modal.getInstance(modal);
-        modalInstance.hide(); // Menutup modal menggunakan Bootstrap Modal
-      }
-    }
+  });
   </script>
 </body>

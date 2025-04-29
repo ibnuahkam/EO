@@ -7,7 +7,8 @@ module.exports = {
       host: '127.0.0.1',
       user: 'root',
       password: '',
-      database: 'event_org'
+      database: 'event_org',
+      charset: 'utf8mb4', // <-- Tambahkan ini
     },
     migrations: {
       directory: './migrations', // Lokasi file migrasi
