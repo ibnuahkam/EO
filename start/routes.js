@@ -13,6 +13,8 @@ Route.post('/login', 'AuthController.login').middleware(['guest']) // Proses log
 
 // Logout, hanya dapat diakses oleh pengguna yang sudah login
 Route.post('/logout', 'AuthController.logout')
+Route.get('/register', 'RegisterController.index')
+Route.post('/register', 'RegisterController.store')
 
 // Route yang membutuhkan pengguna yang sudah login (auth)
 Route.get('/dashboard', 'DashboardController.index').middleware(['auth'])
