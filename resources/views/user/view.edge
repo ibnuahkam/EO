@@ -1,0 +1,82 @@
+@include('layouts/master')
+<body class="bg-white text-gray-800">
+  @include('layouts/nav')
+
+  <!-- Hero / Banner -->
+  <section class="bg-gradient-to-r from-purple-600 to-pink-500 text-white py-16 px-4 text-center">
+    <h2 class="text-3xl md:text-4xl font-semibold mb-2">{{ event.title }}</h2>
+    <p class="text-sm md:text-base mb-6">Detail informasi event</p>
+  </section>
+
+  <main class="max-w-4xl mx-auto px-4 py-12">
+    <!-- Event Info -->
+    <div class="bg-white shadow-xl rounded-2xl p-8 space-y-6">
+      <!-- Gambar -->
+      <div class="relative">
+        @if(event.document_images && event.document_images.length > 0)
+        <img src="/uploads/images/{{ event.document_images[0] }}" alt="Event Image" class="w-full h-64 object-cover rounded-xl">
+        @else
+        <img src="https://source.unsplash.com/800x400/?event" alt="Default Image" class="w-full h-64 object-cover rounded-xl">
+        @endif
+
+        <div class="absolute top-0 right-0 m-4 text-xs font-semibold py-1 px-3 rounded-full shadow-md 
+          {{ event.status === 0 ? 'bg-blue-600 text-white' : event.status === 1 ? 'bg-green-600 text-white' : 'bg-gray-500 text-white' }}">
+          @if(event.status === 0)
+            Upcoming
+          @elseif(event.status === 1)
+            Ongoing
+          @else
+            Unknown
+          @endif
+        </div>
+      </div>
+
+      <!-- Detail -->
+      <div class="space-y-2">
+        <p><strong>Description:</strong> {{ event.description }}</p>
+        <p><strong>Location:</strong> {{ event.location }}</p>
+        <p><strong>Penyelenggara:</strong> {{ event.user_fullname }}</p>
+        <p><strong>Date:</strong> <span class="formatted-date">{{ event.date }}</span></p>
+      </div>
+    </div>
+
+    <!-- Dokumen Terkait -->
+    <div class="mt-12">
+      <h3 class="text-xl font-semibold mb-4">Dokumen Terkait</h3>
+      @if(event.documentManagements && event.documentManagements.length > 0)
+        <ul class="space-y-4">
+          @each(doc in event.documentManagements)
+            <li class="bg-gray-50 p-4 rounded-lg shadow-sm border">
+              <p class="font-semibold">{{ doc.title }}</p>
+              <p class="text-sm text-gray-600">File: 
+                <a href="/uploads/files/{{ doc.file }}" class="text-purple-600 underline" target="_blank">
+                  {{ doc.file }}
+                </a>
+              </p>
+            </li>
+          @endeach
+        </ul>
+      @else
+        <p class="text-gray-600">Tidak ada dokumen terkait.</p>
+      @endif
+    </div>
+  </main>
+
+  @include('layouts/footer')
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dateElements = document.querySelectorAll('.formatted-date');
+      dateElements.forEach(dateElement => {
+        const date = new Date(dateElement.innerText);
+        const formattedDate = new Intl.DateTimeFormat('id-ID', {
+          weekday: 'long',
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        }).format(date);
+        dateElement.innerText = formattedDate;
+      });
+    });
+  </script>
+</body>

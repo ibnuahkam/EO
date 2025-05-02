@@ -16,6 +16,9 @@ class Event extends Model {
         return this.hasMany('App/Models/DocumentManagement', 'id', 'event_id')
       }
     
+    user() {
+    return this.belongsTo('App/Models/User', 'user_id', 'id')
+    }
 
     static get createdAtColumn () {
         return 'created_at';

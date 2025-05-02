@@ -5,6 +5,7 @@ const Event = use('App/Models/Event')
 const DocumentManagement = use('App/Models/DocumentManagement')
 const fs = require('fs')
 const path = require('path')
+const Database = use('Database')
 
 class EventController {
   async store({ request, response }) {
@@ -118,6 +119,40 @@ class EventController {
         error: error.message,
         stack: error.stack
       })
+    }
+  }
+
+  async view({ params, view, response }) {
+    try {
+      const event = await Database
+        .select(
+          'events.*',
+          'document_management.id as document_id',
+          'document_management.images as document_images',
+          'document_management.description as document_description',
+          'users.name as user_name',
+          'users.name as user_fullname'
+        )
+        .from('events')
+        .leftJoin('document_management', 'events.id', 'document_management.event_id')
+        .leftJoin('users', 'events.user_id', 'users.id')
+        .where('events.id', params.id)
+        .first();
+  
+      if (!event) {
+        return response.status(404).send('Event tidak ditemukan');
+      }
+  
+      // Format images JSON jika perlu
+      event.document_images = event.document_images
+        ? JSON.parse(event.document_images)
+        : [];
+  
+      return view.render('user.view', { event });
+  
+    } catch (error) {
+      console.error('Error in EventController.view:', error);
+      return response.status(500).send('Terjadi kesalahan saat memuat data event');
     }
   }
 }
